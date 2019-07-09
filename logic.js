@@ -1,253 +1,197 @@
-// read csv file
+// Setting up migration chart
+
+// -----------------------
+
+// Add markers to chart
+
+// Import data from CSV
 d3.csv('Migrant_Inflow_Outflow_2.csv', function(data) {
   console.log(data);
 
-  var country90 = [];
-  var country95 = [];
-  var country00 = [];
-  var country05 = [];
-  var country10 = [];
-  var country15 = [];
-  var country17 = [];
 
-  // marker size function
-  function markerSize(netMigrants) {
-    return Math.abs(netMigrants) / 10;
-  };
-  
-  // marker color function
-  function markerColor(migrants) {
-    if (migrants >= 0) {
-      return 'blue'
-    }
-    else {
-      return 'red'
-    }
-  };
+// Function to determine marker size based on population
+function absoluteValue(number) {
+  return Math.abs(number);
+};
 
-  // convert raw migration data to numbers with commas
-  function numberWithCommas(x) {
+// Function to round
+function round(number) {
+  return Math.round(number * 100) / 100;
+};
+
+// Function to format numbers with commas
+function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+};
 
-  // loop function on migration data
-  for (var i = 0; i < data.length; i++) {
-    if (parseInt(data[i].year) == 1990) {
-      country90.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 1995) {
-      country95.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 2000) {
-      country00.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 2005) {
-      country05.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 2010) {
-      country10.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 2015) {
-      country15.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
-    else if (parseInt(data[i].year) == 2017) {
-      country17.push(
-        L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
-          stroke: false,
-          fillOpacity: 0.5,
-          color: markerColor(data[i].net_migrants),
-          radius: markerSize(data[i].net_migrants)
-        })
-        .on('mouseover', function(e) {
-          this.openPopup();
-        })
-        .bindPopup("<h3>" + data[i].country +
-          "</h3><hr><p>" + data[i].year + " Net Migration: " + numberWithCommas(data[i].net_migrants))
-      )
-    }
+// Function to replace empty values
+function emptyValues(x) {
+  if (x == null || x == "") {
+    return "No Results";
+  } else {
+    return numberWithCommas(round(x));
   }
+};
 
-  // Define streetmap and darkmap layers
-  var streetmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-    maxZoom: 100,
-    id: "mapbox.streets",
-    accessToken: API_KEY
-  });
+// Set scale for net migrants
+var netScale = 25
 
-  var darkMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-    maxZoom: 100,
-    id: "mapbox.dark",
-    accessToken: API_KEY
-  });
+// Define list of years
+var years = ["1990", "1995", "2000", "2005", "2010", "2015", "2017"];
 
-  // variables holding migration data every 5 years starting 1990
-  var marker90 = L.layerGroup(country90)
-  var marker95 = L.layerGroup(country95)
-  var marker00 = L.layerGroup(country00)
-  var marker05 = L.layerGroup(country05)
-  var marker10 = L.layerGroup(country10)
-  var marker15 = L.layerGroup(country15)
-  var marker17 = L.layerGroup(country17)
+// Create a countries dictionary to hold circle data
+var overlays = {};
 
-  // Define a baseMaps object to hold our base layers
-  var baseMaps = {
-    "Street Map": streetmap,
-    "Night Map": darkMap
-  };
-  // Create overlay object to hold our overlay layer
-  var overlayMaps = {
-    '1990': marker90,
-    '1995': marker95,
-    '2000': marker00,
-    '2005': marker05,
-    '2010': marker10,
-    '2015': marker15,
-    '2017': marker17
-  };
+// Loop through years and add them as keys to the dictionary
+for (var k = 0; k < years.length; k++) {
+  overlays[years[k]] = [];
+}
 
-  // Modify the map so that it will have the streetmap, states, and cities layers
-  var myMap = L.map("map", {
-    center: [37.09, -5.71],
-    zoom: 3,
-    layers: [darkMap, marker90]
-  });
+// Create inlow markers
+for (var j = 0; j < years.length; j++) {
+  var year = years[j];
+  for (var i = 0; i < data.length; i++) {
+    if (parseInt(data[i].year) == year)
+    overlays[year].push(
+      L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
+        stroke: false,
+        fillOpacity: 0.5,
+        // color: markerColor(data[i].net_migrants),
+        // radius: absoluteValue(data[i].net_migrants*.5)
+        color: "blue",
+        radius: absoluteValue(data[i].inflow / netScale)
+      })
+      // Connect popup to marker with additional details
+      .bindPopup(
+        "<h3>" + data[i].country + " (" + data[i].year + ")" + "</h3>" +
 
-  L.control.layers(baseMaps).addTo(myMap)
-  L.control.layers(overlayMaps).addTo(myMap)
+        "<hr>" + 
+        
+        "<p>" +
+          "<b>Net Migration:</b> " + numberWithCommas(data[i].net_migrants) + "<br>" +
+          "<b>GDP per capita:</b> $" + numberWithCommas(round(data[i].gdp_per_capita)) + "<br>" +
+          "<b>Consumer Price Index:</b> " + emptyValues(data[i].cpi) +
+        "</p>"
+      )
+      // Display popup on mouseover
+      .on('mouseover', function(e) {
+        this.openPopup();
+      })
+      // Hide popup on mouseout
+      .on('mouseout', function (e) {
+        this.closePopup();
+      })
+    )
+  }
+}
 
-  // legend set up
-  var legend = L.control({position: "bottomleft"});
+// Create outflow markers
+for (var j = 0; j < years.length; j++) {
+  var year = years[j];
+  for (var i = 0; i < data.length; i++) {
+    if (parseInt(data[i].year) == year)
+    overlays[year].push(
+      L.circle([parseInt(data[i].latitude), parseInt(data[i].longitude)], {
+        stroke: false,
+        fillOpacity: 0.4,
+        color: "red",
+        radius: absoluteValue(data[i].outflow / netScale)
+      })
+    )
+  }
+}
 
-  legend.onAdd = function(myMap) {
-    var div = L.DomUtil.create("div", "info legend");
+// Create flow lines
 
-    // insert legend title
-    div.innerHTML += '<h3>Migration Marker</h3>'
-    div.innerHTML += '<i style="background:red"></i>Net Outflow<br>'
-    div.innerHTML += '<i style="background:blue"></i>Net Inflow' 
-    return div;
-  };
-  legend.addTo(myMap);
+// Import data from Migrant_Lat&Lng_2.csv
+d3.csv('Migrant_Lat&Lng_2.csv', function(line_data) {
+  console.log(line_data);
 
-  // GeoJSON link mapping countries
-  // var coordinates = 'world-countries.json';
-  // var geojson;
+// Create a orig_to_dest dictionary to hold line data
+var orig_to_dest = {};
 
-  // // get request to json url
-  // d3.json(coordinates, function(globeData) {
-  //   console.log(globeData)
-  //   geojson = L.choropleth(globeData, {
-  //     valueProperty: 'csv',
-  //     scale: ['white', 'red'],
-  //     steps: 10,
-  //     mode:'q',
-  //     style: {
-  //       color: '#fff',
-  //       weight: 1,
-  //       fillOpacity: 0.4
-  //     }
-  //   }).addTo(myMap)
-  // })
+// Loop through years and add them as keys to the dictionary
+for (var l = 0; l < years.length; l++) {
+  orig_to_dest[years[l]] = [];
+}
 
-  // Set up the legend
-  // var legend = L.control({ position: "bottomright" });
-  // legend.onAdd = function() {
-  //   var div = L.DomUtil.create("div", "info legend");
-  //   var limits = geojson.options.limits;
-  //   var colors = geojson.options.colors;
-  //   var labels = [];
+// // Loop through the countries array and pass in lat and lon to origin variable
+for (var m = 0; m < years.length; m++) {
+  var year = years[m];
+  for (var n = 0; n < line_data.length; n++) {
+    if (parseInt(line_data[n].year) == year && line_data[n].numb_migrants > 500000)
+    overlays[year].push(
+      L.polyline.antPath([
+          [parseInt(line_data[n].orig_lat), parseInt(line_data[n].orig_lon)],
+          [parseInt(line_data[n].dest_lat), parseInt(line_data[n].dest_lon)]], {
+        weight: (line_data[n].numb_migrants * .000002),
+        opacity: .3,
+        delay: 300,
+        dashArray: [
+          100,
+          100
+        ],
+        color: "#7E00C7",
+        pulseColor: "#FFFFFF",
+        paused: false,
+        reverse: true,
+        hardwareAccelerated: true
+      })
+      // Connect popup to line with additional details (works)
+      .bindPopup(
+        "<b>" + numberWithCommas(line_data[n].numb_migrants) + "</b>" + " people migrated from <br>" +
+        "<b>" + line_data[n].destination + "</b> to <b>" + line_data[n].origin + "</b>"
+      )
+      .on('click', function(e) {
+        this.openPopup();
+      })
+    )
+  }  
+};
 
-  //   // Add min & max
-  //   var legendInfo = "<h1>Consumer Price Index</h1>" +
-  //     "<div class=\"labels\">" +
-  //       "<div class=\"min\">" + limits[0] + "</div>" +
-  //       "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-  //     "</div>";
+// Define streetmap and darkmap layers
+var streetmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 100,
+  id: "mapbox.streets",
+  accessToken: API_KEY
+});
 
-  //   div.innerHTML = legendInfo;
+var darkMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 100,
+  id: "mapbox.dark",
+  accessToken: API_KEY
+});
 
-  //   limits.forEach(function(limit, index) {
-  //     labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-  //   });
+// Define a baseMaps object to hold our base layers
+var baseMaps = {
+  "Street Map": streetmap,
+  "Night Map": darkMap
+};
 
-  //   div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-  //   return div;
-  // };
 
-  // // Adding legend to the map
-  // legend.addTo(myMap);
+// Create overlay object to hold our overlay layer groups -- we may want to create a for loop for this
+
+var overlayMaps = {
+    '1990': L.layerGroup(overlays[1990]),
+    '1995': L.layerGroup(overlays[1995]),
+    '2000': L.layerGroup(overlays[2000]),
+    '2005': L.layerGroup(overlays[2005]),
+    '2010': L.layerGroup(overlays[2010]),
+    '2015': L.layerGroup(overlays[2015]),
+    '2017': L.layerGroup(overlays[2017])
+};
+
+// Modify the map so that it will default to the streetmap layer and year 1990
+var myMap = L.map("map", {
+  center: [0, 0],
+  zoom: 2.5,
+  // layers: [streetmap, L.layerGroup(countries[1990]),L.layerGroup(orig_to_dest[1990])]
+  layers: [streetmap, overlayMaps[1990]]
+});
+
+L.control.layers(baseMaps).addTo(myMap);
+L.control.layers(overlayMaps).addTo(myMap);
+});
 });
