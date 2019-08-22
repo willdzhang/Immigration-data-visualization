@@ -9,3 +9,6 @@ Using Leaflet mapping to create global map and visualize
 Deploy project on Heroku
 
 ![map](map.png)
+
+Based on visualization below.
+http://metrocosm.com/global-migration-map.html
